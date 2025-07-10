@@ -16,7 +16,13 @@ This FastAPI backend provides AI-powered analysis of Salesforce opportunities us
    pip install -r requirements.txt
    ```
 
-4. Run the server:
+4. Set up environment variables:
+   ```bash
+   cp .env.example .env
+   # Edit .env file with your actual values
+   ```
+
+5. Run the server:
    ```bash
    python main.py
    ```
@@ -68,12 +74,15 @@ Returns:
 
 ## Configuration
 
-The Azure OpenAI configuration is set in the `AZURE_OPENAI_CONFIG` dictionary in `main.py`. Update these values if needed:
+The application uses environment variables for configuration. Copy `.env.example` to `.env` and update the values:
 
-- `endpoint`: Your Azure OpenAI endpoint
-- `subscription_key`: Your Azure OpenAI subscription key
-- `api_version`: API version to use
-- `deployment_id`: Your GPT model deployment ID
+- `AZURE_OPENAI_ENDPOINT`: Your Azure OpenAI endpoint
+- `AZURE_OPENAI_SUBSCRIPTION_KEY`: Your Azure OpenAI subscription key
+- `AZURE_OPENAI_API_VERSION`: API version to use
+- `AZURE_OPENAI_DEPLOYMENT_ID`: Your GPT model deployment ID
+- `ALLOWED_ORIGINS`: Comma-separated list of allowed CORS origins
+- `HOST`: Server host (default: 0.0.0.0)
+- `PORT`: Server port (default: 8000)
 
 ## Development
 

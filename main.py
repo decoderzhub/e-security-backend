@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -5,15 +7,20 @@ from typing import List, Optional
 import httpx
 import json
 import asyncio
-import os
 from datetime import datetime
 
+# Load environment variables from .env file
+load_dotenv()
+
 app = FastAPI(title="Salesforce Opportunity AI Analysis API", version="1.0.0")
+
+# Get CORS origins from environment variable
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(",")
 
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],  # Vite dev server
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -21,10 +28,10 @@ app.add_middleware(
 
 # Azure OpenAI Configuration
 AZURE_OPENAI_CONFIG = {
-    "endpoint": "https://v1api-apim-test-eus.azure-api.net",
-    "subscription_key": "ba3c3d6cb67343b2af1eea3120daa2ae",
-    "api_version": "2024-08-01-preview",
-    "deployment_id": "gpt-4o"
+    "endpoint": os.getenv("AZURE_OPENAI_ENDPOINT"),
+    "subscription_key": os.getenv("AZURE_OPENAI_SUBSCRIPTION_KEY"),
+    "api_version": os.getenv("AZURE_OPENAI_API_VERSION"),
+    "deployment_id": os.getenv("AZURE_OPENAI_DEPLOYMENT_ID")
 }
 
 OPPORTUNITY_TYPES = [
@@ -290,4 +297,6 @@ async def get_opportunity_types():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    host = os.getenv("HOST", "0.0.0.0")
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run(app, host=host, port=port)
